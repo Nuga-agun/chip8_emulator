@@ -1,0 +1,21 @@
+COMPONENTS:
+ - RAM : 4kB
+ - Display : 64x32 monochrome
+ - Program Counter (PC)
+ - Index register (I) : 16-bit
+ - Stack : 16-bit addresses
+ - Delay timer : 8-bit, 60Hz
+ - Sound timer : 8-bit, 60Hz
+ - Registers : V0...VF, 8-bit
+ - Keyboard : 0123456789ABCDEF
+
+ NOTES:
+ Faire un fichier de config :
+ -> Mapping du clavier
+ -> Vitesse d'exécution
+ -> Instructions ambigües (choix d'implémentation)
+
+ Ajouter des commandes clavier
+ -> Quitter le programme
+ -> Monter/Baisser le son
+ -> Augmenter/Diminuer la vitesse d'exécution

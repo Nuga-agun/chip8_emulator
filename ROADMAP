@@ -1,0 +1,26 @@
+[] Créer la structure
+[] Initialiser les composants
+[] Créer un mode debug affichant l'état des composants
+
+[] Charger un fichier ROM dans la mémoire
+[] En debug, écrire la mémoire dans un fichier
+-> Charger un fichier en mode debug et comparer la rom à la mémoire
+
+[] Créer un fichier de config
+[] Afficher la config en mode debug
+-> Vérifier les informations en lançant le debug
+
+[] Créer la grille d'affichage
+-> Tester l'affichage vide
+
+[] Créer la boucle principale
+[] Implémenter un temps de rafraichissement
+[] Implémenter la touche de sortie configurée dans le fichier
+
+[] Implémenter le décodage des codes
+[] Implémenter les codes principaux
+-> tester la rom IBM
+
+[] Implémenter les codes restants
+[] Lire les entrées clavier
+-> tester les roms 
