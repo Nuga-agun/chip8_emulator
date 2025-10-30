@@ -20,4 +20,7 @@ typedef struct {
 	uint8_t sound_timer;
 } Chip8;
 
+void initialize_chip(Chip8 *chip);
+void load_font(Chip8 *chip);
+
 #endif

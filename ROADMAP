@@ -2,6 +2,9 @@
 [] Initialiser les composants
 [] Créer un mode debug affichant l'état des composants
 
+[] Créer la police d'écriture (sprites)
+-> Ecrire une méthode pour écrire "Hello, world!"
+
 [] Charger un fichier ROM dans la mémoire
 [] En debug, écrire la mémoire dans un fichier
 -> Charger un fichier en mode debug et comparer la rom à la mémoire
