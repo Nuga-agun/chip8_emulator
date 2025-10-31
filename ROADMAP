@@ -1,9 +1,8 @@
-[] Créer la structure
-[] Initialiser les composants
-[] Créer un mode debug affichant l'état des composants
+[x] Créer la structure
+[x] Initialiser les composants
+[x] Créer un mode debug affichant l'état des composants
 
-[] Créer la police d'écriture (sprites)
--> Ecrire une méthode pour écrire "Hello, world!"
+[x] Créer la police d'écriture (sprites)
 
 [] Charger un fichier ROM dans la mémoire
 [] En debug, écrire la mémoire dans un fichier

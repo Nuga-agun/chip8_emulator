@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define DEBUG
 #define MEMORY_SIZE 4096
 #define DISPLAY_HEIGHT 32
 #define DISPLAY_WIDTH 64
@@ -22,5 +23,7 @@ typedef struct {
 
 void initialize_chip(Chip8 *chip);
 void load_font(Chip8 *chip);
+void update_display(Chip8 *chip);
+int display_chip_state(Chip8 *chip);
 
 #endif
