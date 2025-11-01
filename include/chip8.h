@@ -24,6 +24,9 @@ typedef struct {
 void initialize_chip(Chip8 *chip);
 void load_font(Chip8 *chip);
 void update_display(Chip8 *chip);
-int display_chip_state(Chip8 *chip);
+int load_rom(char *rom_name, int name_length, Chip8 *chip);
+#ifdef DEBUG
+void display_chip_state(Chip8 *chip, bool display_memory);
+#endif
 
 #endif

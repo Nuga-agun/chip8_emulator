@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define ROMS_LOCATION "roms/"
+
 void initialize_chip(Chip8 *chip) {
 	memset(chip->memory, 0, MEMORY_SIZE);
 	chip->stack = &chip->memory[MEMORY_SIZE-1];
@@ -57,12 +59,35 @@ void update_display(Chip8 *chip){
 	}
 
 #ifdef DEBUG
-	display_chip_state(chip);
+	display_chip_state(chip, false);
 #endif
 }
 
+int load_rom(char *rom_name, int name_length, Chip8 *chip) {
+	char path[sizeof(ROMS_LOCATION) + name_length];
+	strcat(strcpy(path, ROMS_LOCATION), rom_name);
+	FILE *rom = NULL;
+	rom = fopen(path, "r");
 #ifdef DEBUG
-int display_chip_state(Chip8 *chip) {
+	printf("Ouverture de la rom %s\n", path);
+#endif
+	if (rom == NULL) {
+		printf("Erreur lors de l'ouverture du fichier\n");
+		return 1;
+	}
+
+	int addr=chip->pc;
+	int c;
+	while (c != EOF) {
+		c = fgetc(rom);
+		chip->memory[addr] = c;
+		addr++;
+	}
+	return 0;
+}
+
+#ifdef DEBUG
+void display_chip_state(Chip8 *chip, bool display_memory) {
 	printf("\n-----CHIP STATUS-----\n");
 	printf("PC ......... %p\n", chip->pc);
 	printf("I ......... %p\n", chip->I);
@@ -86,5 +111,11 @@ int display_chip_state(Chip8 *chip) {
 	printf("\nTIMERS :\n");
 	printf("delay....... %p\n", chip->delay_timer);
 	printf("sound....... %p\n", chip->sound_timer);
+
+	if (display_memory) {
+		for (int i=0; i<MEMORY_SIZE; i++) {
+			printf(i ==chip->pc ? " _ %02x _ ;" : " %02x ;", chip->memory[i]);
+		}
+	}
 }
 #endif
