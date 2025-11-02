@@ -5,26 +5,6 @@
 #include <stdlib.h>
 #include <termios.h>
 
-char getch(void) {
-    char buf = 0;
-    struct termios old = {0};
-    if (tcgetattr(0, &old) < 0)
-        perror("tcgetattr()");
-    old.c_lflag &= ~ICANON; // Disable line buffering
-    old.c_lflag &= ~ECHO;   // Disable echo
-    old.c_cc[VMIN] = 1;     // Wait for at least one character
-    old.c_cc[VTIME] = 0;    // No timeout
-    if (tcsetattr(0, TCSANOW, &old) < 0)
-        perror("tcsetattr ICANON");
-    if (read(0, &buf, 1) < 0)
-        perror("read()");
-    old.c_lflag |= ICANON;  // Restore line buffering
-    old.c_lflag |= ECHO;    // Restore echo
-    if (tcsetattr(0, TCSADRAIN, &old) < 0)
-        perror("tcsetattr ~ICANON");
-    return buf;
-}
-
 int main (int argc, char* argv[]) {
 	if (argc != 2) {
 		printf("Utilisation : chip <ROM_NAME>");
@@ -39,17 +19,44 @@ int main (int argc, char* argv[]) {
 		return 1;
 	}
 #ifdef DEBUG
-	display_chip_state(&chip, true);
+	display_chip_state(&chip, false);
 #endif
 
 	int return_code = 0;
 	do {
 		//fetch
+		uint16_t instruction = chip.memory[chip.pc]*256 + chip.memory[chip.pc+1];
+		chip.pc += 2;
+#ifdef DEBUG
+		printf("%04X -> ", instruction, instruction>>12);
+#endif
+
 		//decode
-		//execute
-		if (getch() == 27) {
-			printf("Keyboard Interruption");
-			return_code = 1;
+		if (instruction == 0x00E0) {
+			printf("Clear screen !\n");
 		}
+		switch(instruction>>12) {
+			case 0x1:
+				printf("Jump !\n");
+				break;
+			case 0x6:
+				printf("set register V%X\n", (instruction>>8)&0b1111);
+				break;
+			case 0x7:
+				printf("add value to register V%X\n", (instruction>>8)&0b1111);
+				break;
+			case 0xA:
+				printf("set index register\n");
+				break;
+			case 0xD:
+				printf("Draw !\n");
+				break;
+			default:
+				printf("\n");
+		}
+		if (instruction == 0) {
+			return 0;
+		}
+		//execute
 	} while (return_code == 0);
 }

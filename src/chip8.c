@@ -111,11 +111,13 @@ void display_chip_state(Chip8 *chip, bool display_memory) {
 	printf("\nTIMERS :\n");
 	printf("delay....... %p\n", chip->delay_timer);
 	printf("sound....... %p\n", chip->sound_timer);
+	printf("\n");
 
 	if (display_memory) {
 		for (int i=0; i<MEMORY_SIZE; i++) {
 			printf(i ==chip->pc ? " _ %02x _ ;" : " %02x ;", chip->memory[i]);
 		}
 	}
+	printf("\n");
 }
 #endif
