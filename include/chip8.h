@@ -7,6 +7,7 @@
 #define MEMORY_SIZE 4096
 #define DISPLAY_HEIGHT 32
 #define DISPLAY_WIDTH 64
+#define REFRESH_DELAY 100000
 
 typedef struct {
 	uint8_t memory[MEMORY_SIZE]; //RAM
