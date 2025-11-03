@@ -78,8 +78,11 @@ int main (int argc, char* argv[]) {
 #endif
 				break;
 			case 0xD:
+				uint8_t X = chip.V[(instruction&NIBBLE_MASK_2)>>8];
+				uint8_t Y = chip.V[(instruction&NIBBLE_MASK_3)>>4];
+				uint8_t height = instruction&NIBBLE_MASK_4;
 #ifdef DEBUG
-				printf("Draw !\n");
+				printf("Draw a %d tall sprite from (%d,%d) !\n", height, X, Y);
 #endif
 				break;
 			default:
