@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <termios.h>
+#include <string.h>
 
 #define NIBBLE_MASK_1 0b1111000000000000
 #define NIBBLE_MASK_2 0b0000111100000000
@@ -31,26 +32,21 @@ int main (int argc, char* argv[]) {
 	int return_code = 0;
 	do {
 		uint16_t instruction = chip.memory[chip.pc]*256 + chip.memory[chip.pc+1];
-#ifdef DEBUG
-		printf("%04X : %04X -> ", chip.pc, instruction);
-#endif
 		chip.pc += 2;
 
 		if (instruction == 0x00E0) {
-#ifdef DEBUG
-			printf("Clear screen\n");
-#endif
 			clear(&chip);
 			update(&chip);
 			continue;
 		}
 		uint8_t register_index = 0;
+		uint8_t register_index_2 = 0;
 		uint16_t value = 0;
 		switch(instruction>>12) {
 			case 0x1:
 				chip.pc = instruction&(NIBBLE_MASK_2|NIBBLE_MASK_3|NIBBLE_MASK_4);
 #ifdef DEBUG
-				printf("Jump to %X\n", chip.pc);
+				printf("Jump to %00X\n", chip.pc);
 #endif
 				break;
 			case 0x6:
@@ -58,7 +54,7 @@ int main (int argc, char* argv[]) {
 				value = instruction&(NIBBLE_MASK_3|NIBBLE_MASK_4);
 				chip.V[register_index] = value;
 #ifdef DEBUG
-				printf("set register V%X to %02X\n", register_index, value);
+				printf("Set register V%X = %02X\n", register_index, value);
 #endif
 				break;
 			case 0x7:
@@ -66,29 +62,29 @@ int main (int argc, char* argv[]) {
 				register_index = (instruction&NIBBLE_MASK_2)>>8;
 				chip.V[register_index] += value;
 #ifdef DEBUG
-				printf("add %02X to register V%X\n", value, register_index);
-				printf("	-> V%X is now %02X\n", register_index, chip.V[register_index]);
+				printf("Add value %d to register V%X\n", value, register_index);
 #endif
 				break;
 			case 0xA:
 				value = instruction&(~NIBBLE_MASK_1);
 				chip.I = value;
 #ifdef DEBUG
-				printf("set index register to %03X\n", value);
+				printf("Set index to %00X\n", value);
 #endif
 				break;
 			case 0xD:
-				uint8_t X = chip.V[(instruction&NIBBLE_MASK_2)>>8];
-				uint8_t Y = chip.V[(instruction&NIBBLE_MASK_3)>>4];
+				register_index = (instruction&NIBBLE_MASK_2)>>8;
+				register_index_2 = (instruction&NIBBLE_MASK_3)>>4;
+				uint8_t X = (chip.V[register_index])%DISPLAY_WIDTH;
+				uint8_t Y = (chip.V[register_index_2])%DISPLAY_HEIGHT;
 				uint8_t height = instruction&NIBBLE_MASK_4;
 #ifdef DEBUG
-				printf("Draw a %d tall sprite from (%d,%d) !\n", height, X, Y);
+				printf("Draw !\n\tCoordinates : (%02d,%02d); height = %d\n", X, Y, height);
 #endif
+				draw(X, Y, height, &chip);
+				update(&chip);
 				break;
 			default:
-#ifdef DEBUG
-				printf("\n");
-#endif
 		}
 		if (instruction == 0) {
 			return 0;
