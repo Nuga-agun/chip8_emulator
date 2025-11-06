@@ -1,9 +1,10 @@
-[] Créer la structure
-[] Initialiser les composants
-[] Créer un mode debug affichant l'état des composants
+[x] Créer la structure
+[x] Initialiser les composants
+[x] Créer un mode debug affichant l'état des composants
 
-[] Charger un fichier ROM dans la mémoire
-[] En debug, écrire la mémoire dans un fichier
+[x] Créer la police d'écriture (sprites)
+
+[x] Charger un fichier ROM dans la mémoire
 -> Charger un fichier en mode debug et comparer la rom à la mémoire
 
 [] Créer un fichier de config
