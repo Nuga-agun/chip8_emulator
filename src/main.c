@@ -58,6 +58,37 @@ int main (int argc, char* argv[]) {
 #ifdef DEBUG
 				printf("Subroutine at %02X", value);
 #endif
+				break;
+			case 0x3:
+				register_index = (instruction&NIBBLE_MASK_2)>>8;
+				value = instruction&(NIBBLE_MASK_3|NIBBLE_MASK_4);
+				if (value == chip.V[register_index]) {
+					chip.pc += 2;
+				}
+#ifdef DEBUG
+				printf("If V%X = %02X, skip next instruction", register_index, value);
+#endif
+				break;
+			case 0x4:
+				register_index = (instruction&NIBBLE_MASK_2)>>8;
+				value = instruction&(NIBBLE_MASK_3|NIBBLE_MASK_4);
+				if (value != chip.V[register_index]) {
+					chip.pc += 2;
+				}
+#ifdef DEBUG
+				printf("If V%X != %02X, skip next instruction", register_index, value);
+#endif
+				break;
+			case 0x5:
+				register_index = (instruction&NIBBLE_MASK_2)>>8;
+				register_index_2 = (instruction&NIBBLE_MASK_3)>>4;
+				if (chip.V[register_index] == chip.V[register_index_2]) {
+					chip.pc += 2;
+				}
+#ifdef DEBUG
+				printf("If V%X = V%X, skip next instruction", register_index, register_index_2);
+#endif
+				break;
 			case 0x6:
 				register_index = (instruction&NIBBLE_MASK_2)>>8;
 				value = instruction&(NIBBLE_MASK_3|NIBBLE_MASK_4);
@@ -72,6 +103,16 @@ int main (int argc, char* argv[]) {
 				chip.V[register_index] += value;
 #ifdef DEBUG
 				printf("Add value %d to register V%X\n", value, register_index);
+#endif
+				break;
+			case 0x9:
+				register_index = (instruction&NIBBLE_MASK_2)>>8;
+				register_index_2 = (instruction&NIBBLE_MASK_3)>>4;
+				if (chip.V[register_index] != chip.V[register_index_2]) {
+					chip.pc += 2;
+				}
+#ifdef DEBUG
+				printf("If V%X != V%X, skip next instruction", register_index, register_index_2);
 #endif
 				break;
 			case 0xA:
