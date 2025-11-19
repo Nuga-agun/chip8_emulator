@@ -38,17 +38,26 @@ int main (int argc, char* argv[]) {
 			clear(&chip);
 			update(&chip);
 			continue;
+		} else if (instruction = 0X00EE) {
+			chip.pc = pop_from_stack(&chip);
 		}
 		uint8_t register_index = 0;
 		uint8_t register_index_2 = 0;
 		uint16_t value = 0;
 		switch(instruction>>12) {
 			case 0x1:
-				chip.pc = instruction&(NIBBLE_MASK_2|NIBBLE_MASK_3|NIBBLE_MASK_4);
+				chip.pc = instruction&(~NIBBLE_MASK_1);
 #ifdef DEBUG
 				printf("Jump to %00X\n", chip.pc);
 #endif
 				break;
+			case 0x2:
+				push_to_stack(&chip, chip.pc);
+				value = instruction&(~NIBBLE_MASK_1);
+				chip.pc = value;
+#ifdef DEBUG
+				printf("Subroutine at %02X", value);
+#endif
 			case 0x6:
 				register_index = (instruction&NIBBLE_MASK_2)>>8;
 				value = instruction&(NIBBLE_MASK_3|NIBBLE_MASK_4);

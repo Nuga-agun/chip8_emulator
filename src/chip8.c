@@ -9,7 +9,7 @@
 
 void initialize_chip(Chip8 *chip) {
 	memset(chip->memory, 0, MEMORY_SIZE);
-	chip->stack = &chip->memory[MEMORY_SIZE-1];
+	chip->stack = 0;
 	chip->pc = 0x200;
 	chip->I = 0;
 	memset(chip->V, 0, 16);
@@ -47,6 +47,24 @@ void load_font(Chip8 *chip) {
 	for (int i=0; i<80; i++) {
 		chip->memory[i] = fontset[i];
 	}
+}
+
+void push_to_stack(uint16_t value, Chip8 *chip) {
+	if (chip->stack >=16) {
+		return;
+	}
+	chip->stack += 1;
+	chip->memory[MEMORY_SIZE-stack*2] = value>>8;
+	chip->memory[MEMORY_SIZE-stack*2+1] = value&0xFF;
+}
+
+void pop_from_stack(Chip8 *chip) {
+	if (chip->stack <= 0) {
+		return;
+	}
+	uint16_t value;
+	value += chip->memory[MEMORY_SIZE-stack*2]*0X100;
+	value += chip->memory[MEMORY_SIZE-stack*2+1];
 }
 
 void update_display(Chip8 *chip){

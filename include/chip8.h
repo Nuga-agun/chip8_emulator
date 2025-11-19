@@ -11,7 +11,7 @@
 
 typedef struct {
 	uint8_t memory[MEMORY_SIZE]; //RAM
-	uint8_t *stack; //Stack (intégrée à la mémoire)
+	uint8_t stack; //Stack (intégrée à la mémoire)
 	uint16_t pc; //Program counter
 	uint16_t I; //Index register
 	uint8_t V[16]; //Registres
@@ -23,6 +23,8 @@ typedef struct {
 
 void initialize_chip(Chip8 *chip);
 void load_font(Chip8 *chip);
+void push_to_stack(uint16_t value, Chip8 *chip);
+void pop_from_stack(Chip8 *chip);
 void update_display(Chip8 *chip);
 int load_rom(char *rom_name, int name_length, Chip8 *chip);
 #ifdef DEBUG
