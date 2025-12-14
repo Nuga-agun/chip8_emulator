@@ -22,6 +22,24 @@ void initialize_chip(Chip8 *chip) {
 	chip->delay_timer = 0;
 	chip->sound_timer = 0;
 	load_font(chip);
+
+	/* Initialize keyboard map */
+	chip->keyboard_map[0] = '1';
+	chip->keyboard_map[1] = '2';
+	chip->keyboard_map[2] = '3';
+	chip->keyboard_map[3] = '4';
+	chip->keyboard_map[4] = 'a';
+	chip->keyboard_map[5] = 'z';
+	chip->keyboard_map[6] = 'e';
+	chip->keyboard_map[7] = 'r';
+	chip->keyboard_map[8] = 'q';
+	chip->keyboard_map[9] = 's';
+	chip->keyboard_map[10] = 'd';
+	chip->keyboard_map[11] = 'f';
+	chip->keyboard_map[12] = 'w';
+	chip->keyboard_map[13] = 'x';
+	chip->keyboard_map[14] = 'c';
+	chip->keyboard_map[15] = 'v';
 }
 
 void load_font(Chip8 *chip) {
@@ -50,21 +68,30 @@ void load_font(Chip8 *chip) {
 }
 
 void push_to_stack(uint16_t value, Chip8 *chip) {
-	if (chip->stack >=16) {
+	if (chip->stack > 16) {
 		return;
 	}
 	chip->stack += 1;
-	chip->memory[MEMORY_SIZE-stack*2] = value>>8;
-	chip->memory[MEMORY_SIZE-stack*2+1] = value&0xFF;
+	chip->memory[MEMORY_SIZE-(chip->stack)*2] = value>>8;
+	chip->memory[MEMORY_SIZE-(chip->stack)*2-1] = value&0xFF;
+#ifdef DEBUG
+	printf("value : %02X; stack : %X\n", value, chip->stack);
+#endif
 }
 
-void pop_from_stack(Chip8 *chip) {
+uint16_t pop_from_stack(Chip8 *chip) {
 	if (chip->stack <= 0) {
-		return;
+		return chip->pc;
 	}
 	uint16_t value;
-	value += chip->memory[MEMORY_SIZE-stack*2]*0X100;
-	value += chip->memory[MEMORY_SIZE-stack*2+1];
+	value = (chip->memory[MEMORY_SIZE-(chip->stack)*2])*0x100;
+	value += chip->memory[MEMORY_SIZE-(chip->stack)*2-1];
+	chip->stack -= 1;
+#ifdef DEBUG
+	printf("Stack index : %X\n", chip->stack + 1);
+	printf("Stack value : %02X\n", value);
+#endif
+	return value;
 }
 
 void update_display(Chip8 *chip){
@@ -102,6 +129,25 @@ int load_rom(char *rom_name, int name_length, Chip8 *chip) {
 		addr++;
 	}
 	return 0;
+}
+
+void keyboard_input(char input, Chip8 *chip) {
+	for (int i=0; i<16; i++) {
+		if (chip->keyboard_map[i] == input) {
+			chip->keyboard[i] = true;
+		} else {
+			chip->keyboard[i] = false;
+		}
+	}
+}
+
+bool get_key_state(char key, Chip8 *chip) {
+	for (int i=0; i<16; i++) {
+		if (chip->keyboard_map[i] == key) {
+			return chip->keyboard[i];
+		}
+	}
+	return false;
 }
 
 #ifdef DEBUG
